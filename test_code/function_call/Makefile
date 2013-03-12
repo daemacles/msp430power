@@ -9,8 +9,8 @@
 # The TXT file is used for BSL loading, the ELF can be used for JTAG use        
 #                                                                               
 TARGET     = function_call
-#MCU        = msp430g2553                                                       
-MCU        = msp430f2618                                                        
+MCU        = msp430g2553                                                       
+#MCU        = msp430f2618                                                        
 # List all the source files here                                                
 # eg if you have a source file foo.c then list it here                          
 SOURCES = function_call.c                                                          
@@ -18,7 +18,7 @@ SOURCES = function_call.c
 INCLUDES = -IInclude                                                            
 # Add or subtract whatever MSPGCC flags you want. There are plenty more         
 #######################################################################################                                                                         
-CFLAGS   = -mmcu=$(MCU) -g -Os -Wall -Wunused $(INCLUDES)                       
+CFLAGS   = -mmcu=$(MCU) -g -Wall -Wunused $(INCLUDES)                       
 ASFLAGS  = -mmcu=$(MCU) -x assembler-with-cpp -Wa,-gstabs                       
 LDFLAGS  = -mmcu=$(MCU) -Wl,-Map=$(TARGET).map                                  
 ########################################################################################                                                                        
@@ -80,6 +80,10 @@ endif
 %.d: %.c
 	echo "Generating dependencies $@ from $<"
 	$(CC) -M ${CFLAGS} $< >$@
+
+acquire: $(TARGET)
+	python ../../scripts/power.py function_call.dat
+
 .SILENT:
 .PHONY:	clean
 

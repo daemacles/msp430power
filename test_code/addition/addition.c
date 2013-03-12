@@ -1,9 +1,5 @@
 #include <msp430.h>
 
-int fn(unsigned int a) {
-    return a + 5;
-}
-
 int main(void)
 {
     // Stop watchdog timer
@@ -23,10 +19,22 @@ int main(void)
     
     P1OUT = 0x01;
 
+    // TEST CODE GOES HERE
+    volatile int a = 0;
+    volatile int b = 1;
     i = 1000;
-    volatile unsigned int j = 0;
     while(i--) {
-        j = fn(i);
+        // 10!
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
+        a += b;
     }
     
     P1OUT = 0x00;
