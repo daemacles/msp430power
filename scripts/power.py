@@ -117,4 +117,5 @@ def getSamples(sampleSource, outputName = 'output.dat'):
     f.close()
     return data
     
-
+if __name__ == "__main__":
+    getSamples(readSocket, sys.argv[1])
