@@ -1,20 +1,3 @@
-#!/bin/bash
-
-#
-# make_script.sh
-#
-# creates skeleton files for test cases
-# 
-# usage:
-# ./make_script.sh test_name
-#
-
-BASENAME=$1
-
-mkdir $BASENAME
-cp template/main.c $BASENAME/$BASENAME.c
-
-cat > $BASENAME/Makefile <<EOF
 #                                                                               
 # Makefile for msp430                                                           
 #                                                                               
@@ -22,22 +5,22 @@ cat > $BASENAME/Makefile <<EOF
 # 'make clean' deletes everything except source files and Makefile              
 # You need to set TARGET, MCU and SOURCES for your project.                     
 # TARGET is the name of the executable file to be produced                      
-# \$(TARGET).elf \$(TARGET).hex and \$(TARGET).txt nad \$(TARGET).map are all generated.                                                                            
+# $(TARGET).elf $(TARGET).hex and $(TARGET).txt nad $(TARGET).map are all generated.                                                                            
 # The TXT file is used for BSL loading, the ELF can be used for JTAG use        
 #                                                                               
-TARGET     = $BASENAME
+TARGET     = function_call
 #MCU        = msp430g2553                                                       
 MCU        = msp430f2618                                                        
 # List all the source files here                                                
 # eg if you have a source file foo.c then list it here                          
-SOURCES = $BASENAME.c                                                          
+SOURCES = function_call.c                                                          
 # Include are located in the Include directory                                  
 INCLUDES = -IInclude                                                            
 # Add or subtract whatever MSPGCC flags you want. There are plenty more         
 #######################################################################################                                                                         
-CFLAGS   = -mmcu=\$(MCU) -g -Os -Wall -Wunused \$(INCLUDES)                       
-ASFLAGS  = -mmcu=\$(MCU) -x assembler-with-cpp -Wa,-gstabs                       
-LDFLAGS  = -mmcu=\$(MCU) -Wl,-Map=\$(TARGET).map                                  
+CFLAGS   = -mmcu=$(MCU) -g -Os -Wall -Wunused $(INCLUDES)                       
+ASFLAGS  = -mmcu=$(MCU) -x assembler-with-cpp -Wa,-gstabs                       
+LDFLAGS  = -mmcu=$(MCU) -Wl,-Map=$(TARGET).map                                  
 ########################################################################################                                                                        
 CC       = msp430-gcc                                                           
 LD       = msp430-ld                                                            
@@ -57,58 +40,55 @@ MV       = mv
 ########################################################################################                                                                        
 
 # the file which will include dependencies
-DEPEND = \$(SOURCES:.c=.d)
+DEPEND = $(SOURCES:.c=.d)
 
 # all the object files
-OBJECTS = \$(SOURCES:.c=.o)
+OBJECTS = $(SOURCES:.c=.o)
 
-all: \$(TARGET).elf \$(TARGET).hex \$(TARGET).txt 
+all: $(TARGET).elf $(TARGET).hex $(TARGET).txt 
 
-\$(TARGET).elf: \$(OBJECTS)
-	echo "Linking \$@"
-	\$(CC) \$(OBJECTS) \$(LDFLAGS) \$(LIBS) -o \$@
+$(TARGET).elf: $(OBJECTS)
+	echo "Linking $@"
+	$(CC) $(OBJECTS) $(LDFLAGS) $(LIBS) -o $@
 	echo
 	echo ">>>> Size of Firmware <<<<"
-	\$(SIZE) \$(TARGET).elf
+	$(SIZE) $(TARGET).elf
 	echo
 
 %.hex: %.elf
-	\$(OBJCOPY) -O ihex \$< \$@
+	$(OBJCOPY) -O ihex $< $@
 
 %.txt: %.hex
-	\$(MAKETXT) -O \$@ -TITXT \$< -I
+	$(MAKETXT) -O $@ -TITXT $< -I
 
 %.o: %.c
-	echo "Compiling \$<"
-	\$(CC) -c \$(CFLAGS) -o \$@ \$<
+	echo "Compiling $<"
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 # rule for making assembler source listing, to see the code
 %.lst: %.c
-	\$(CC) -c \$(ASFLAGS) -Wa,-anlhd \$< > \$@
+	$(CC) -c $(ASFLAGS) -Wa,-anlhd $< > $@
 
 # include the dependencies unless we're going to clean, then forget about them.
-ifneq (\$(MAKECMDGOALS), clean)
--include \$(DEPEND)
+ifneq ($(MAKECMDGOALS), clean)
+-include $(DEPEND)
 endif
 
 # dependencies file
 # includes also considered, since some of these are our own
 # (otherwise use -MM instead of -M)
 %.d: %.c
-	echo "Generating dependencies \$@ from \$<"
-	\$(CC) -M \${CFLAGS} \$< >\$@
+	echo "Generating dependencies $@ from $<"
+	$(CC) -M ${CFLAGS} $< >$@
 .SILENT:
 .PHONY:	clean
 
 clean:
-	-\$(RM) \$(OBJECTS)
-	-\$(RM) \$(TARGET).elf
-	-\$(RM) \$(TARGET).hex
-	-\$(RM) \$(TARGET).txt
-	-\$(RM) \$(TARGET).map
-	-\$(RM) \$(SOURCES:.c=.lst)
-	-\$(RM) \$(DEPEND)
+	-$(RM) $(OBJECTS)
+	-$(RM) $(TARGET).elf
+	-$(RM) $(TARGET).hex
+	-$(RM) $(TARGET).txt
+	-$(RM) $(TARGET).map
+	-$(RM) $(SOURCES:.c=.lst)
+	-$(RM) $(DEPEND)
 
-EOF
-
-echo "Don't forget to add $BASENAME to git..."
