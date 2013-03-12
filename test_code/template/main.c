@@ -13,20 +13,14 @@ int main(void)
     P1DIR |= 0x01;                            
     P1OUT = 0x00;
 
+    // Wait for the chip to spin up
     volatile unsigned int i = 1000;
     while(i--);
     
     P1OUT = 0x01;
-    // i = 20;
-    // while (i--)
-    // P1OUT = 0x00;
+
+    // TEST CODE GOES HERE
     
-    i = 10000;
-    while(i--);
-        
-    // P1OUT = 0x01;
-    // i = 20;
-    // while (i--)
     P1OUT = 0x00;
     
     return 0;

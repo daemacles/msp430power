@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#
+# make_script.sh
+#
+# creates skeleton files for test cases
+# 
+# usage:
+# ./make_script.sh test_name
+#
+
 BASENAME=$1
 
 mkdir $BASENAME
@@ -88,3 +97,5 @@ clean:
         -\$(RM) \$(SOURCES:.c=.lst)
         -\$(RM) \$(DEPEND)
 EOF
+
+echo "Don't forget to add $BASENAME to git..."
