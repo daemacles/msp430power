@@ -39,7 +39,7 @@ int main(void)
     // spin
     i = 2000;
     while (i--) {
-    // turn on the ADC10
+        // Start another sample if its ready
         if (!(ADC10CTL1 & ADC10BUSY)) {
             value = ADC10MEM;
             ADC10CTL0 |= ADC10SC;
