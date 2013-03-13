@@ -67,7 +67,7 @@ DEPEND = \$(SOURCES:.c=.d)
 OBJECTS = \$(SOURCES:.c=.o)
 
 all: \$(TARGET).elf \$(TARGET).hex \$(TARGET).txt
-p
+
 \$(TARGET).elf: \$(OBJECTS)
 	echo "Linking \$@"
 	\$(CC) \$(OBJECTS) \$(LDFLAGS) \$(LIBS) -o \$@
@@ -103,8 +103,10 @@ endif
 	echo "Generating dependencies \$@ from \$<"
 	\$(CC) -M \${CFLAGS} \$< >\$@
 
-acquire: \$(TARGET)
+acquire: \$(TARGET).elf
 	python ../../scripts/power.py $BASENAME.dat
+program: \$(TARGET).elf
+	mspdebug rf2500 "prog \$(TARGET).elf"
 
 .SILENT:
 .PHONY:	clean
