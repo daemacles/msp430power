@@ -30,6 +30,9 @@ int main(void)
     }
     
     P1OUT = 0x00;
+
+    i = 5;
+    while(i--);
     
     return 0;
 }

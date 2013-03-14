@@ -31,7 +31,7 @@ def parse(filename):
         dataFile.readline()
 
     return np.array([map(float, line.split(','))
-            for line in dataFile.readlines()[:-1]])
+                     for line in dataFile.readlines()[:-1]])
 
 def mine(data, voltageCol=1, pinCol=2):
     '''
@@ -78,7 +78,7 @@ def readFiles(basePath):
         E, A = calc(dT, dV)
         i += 1
         yield((i, dT, dV, E, A))
-    yield None
+
     return
 
 def readSocket():
@@ -115,6 +115,14 @@ def getSamples(sampleSource, outputName = 'output.dat'):
     data = np.array(data)
         
     f.close()
+    return data
+
+def loadDat(filename):
+    datFile = open(filename, 'r')
+    header = datFile.readline()
+    rawData = map(str.split, datFile.readlines())
+    data = np.array([map(float, row) for row in rawData])
+    datFile.close()
     return data
     
 if __name__ == "__main__":
